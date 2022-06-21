@@ -1,6 +1,6 @@
 @font-face {
   font-family: 'Jinky';
-  src: local('Jinky'), url(./fonts/JINKY.ttf) format('truetype');
+  src: local('Jinky'), url(./Fonts/JINKY.ttf) format('truetype');
 }
 
 body {

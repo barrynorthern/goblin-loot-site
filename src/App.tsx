@@ -1,8 +1,11 @@
 import React from 'react';
 import logo from './collection.jpg';
 import './App.css';
+import { useWeb3 } from './Hooks/useWeb3';
 
 function App() {
+  // const { connect } = useWeb3();
+
   return (
     <div className="App">
       <header className="App-header">
@@ -13,6 +16,7 @@ function App() {
         <h2 className="text-dim">
           (We iz stil lookin in caves fer fings)
         </h2>
+        {/* <button onClick={connect}>Connect</button> */}
       </header>
     </div>
   );
