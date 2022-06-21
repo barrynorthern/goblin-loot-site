@@ -1,39 +1,7 @@
-@font-face {
-  font-family: 'Jinky';
-  src: local('Jinky'), url(./Fonts/JINKY.ttf) format('truetype');
-}
-
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-h1, h2, h3 {
-  font-family: 'Jinky', serif;
-  font-weight: normal;
-  margin: 0;
-  padding: 0;
-}
-
-h1 {
-  font-size: 64pt;
-}
-h2 {
-  font-size: 48pt;
-}
-h3 {
-  font-size: 24pt;
 }
 
 .text-dim {
   color: rgb(125, 125, 125);
-}
-
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
 }
