@@ -24,12 +24,14 @@ const typography : TypographyOptions = {
       textTransform: "none",
   },
   h1: {
-      fontSize: '80px',
+      fontSize: '72px',
       fontWeight: 500,
+      lineHeight: '60%'
   },
   h2: {
-    fontSize: '56px',
-      fontWeight: 500,
+    fontSize: '48px',
+    fontWeight: 500,
+    lineHeight: '80%'
   },
   h5: {
       fontWeight: 600,
