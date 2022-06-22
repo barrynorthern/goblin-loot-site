@@ -24,7 +24,12 @@ export function useWeb3() {
     };
     
     useEffect(() => {
-        web3().eth.getAccounts().then(connectAccount);
+        try {
+            web3().eth.getAccounts().then(connectAccount);
+        }
+        catch(e) {
+            console.warn(e);
+        }
     }, [])
 
     const connect = () => {
