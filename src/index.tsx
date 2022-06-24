@@ -29,13 +29,18 @@ const typography : TypographyOptions = {
       lineHeight: '60%'
   },
   h2: {
-    fontSize: '48px',
+    fontSize: '64px',
+    fontWeight: 500,
+    lineHeight: '80%'
+  },
+  h3: {
+    fontSize: '56px',
     fontWeight: 500,
     lineHeight: '80%'
   },
   h5: {
-      fontWeight: 600,
-      fontSize: '1.7rem',
+      fontWeight: 500,
+      fontSize: '2.5rem',
   },
   h6: {
       fontWeight: 400,
