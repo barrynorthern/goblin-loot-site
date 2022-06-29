@@ -38,6 +38,10 @@ const typography : TypographyOptions = {
     fontWeight: 500,
     lineHeight: '80%'
   },
+  h4: {
+    fontFamily: 'monospace',
+    fontSize: '12px',
+  },
   h5: {
       fontWeight: 500,
       fontSize: '2.5rem',

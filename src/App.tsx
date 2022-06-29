@@ -8,6 +8,7 @@ import "./App.css";
 import { useWeb3, MintStatus } from "./Hooks/useWeb3";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEthereum } from "@fortawesome/free-brands-svg-icons";
+import useFetch from "react-fetch-hook";
 
 const DEFAULT_QUANTITY = 5;
 
@@ -20,7 +21,8 @@ function App() {
     totalSupply, 
     maxSupply,
     mint,
-    mintStatus } = useWeb3();
+    mintStatus,
+    getPayableAmount } = useWeb3();
 
   return (
     <Box className="App">
@@ -38,7 +40,7 @@ function App() {
           <AppBodyBranding/>
           {!hasMetamask && <MetaMaskInstall/>}
           {hasMetamask && !connected && <MetaMaskConnect connect={connect}/>}
-          {connected && <MintingContainer mint={mint} mintStatus={mintStatus}/>}
+          {connected && <MintingContainer mint={mint} getPayableAmount={getPayableAmount} mintStatus={mintStatus}/>}
         </Stack>
       </Box>
     </Box>
@@ -162,9 +164,10 @@ function MetaMaskConnect({connect}: MetaMaskConnectProps) {
 
 interface MintPanelProps {
   mint: (quantity: number) => void;
+  getPayableAmount: (quantity: number) => number;
 }
 
-function MintPanel({mint}: MintPanelProps) {
+function MintPanel({mint, getPayableAmount}: MintPanelProps) {
   const valuetext = (value: number, index: number) => `${value}`;
   const [quantity, setQuantity] = useState(DEFAULT_QUANTITY);
   const handleQuantityChange = (value: number | number[]) => setQuantity(value as number);
@@ -192,6 +195,9 @@ function MintPanel({mint}: MintPanelProps) {
       >
         <Typography sx={{ fontSize: "78px", marginRight: "20px" }}>Mint</Typography><EthereumIcon/>
       </Button>
+      <Stack direction="row" sx={{marginTop: '15px'}}>
+        <Typography variant="h3" sx={{marginRight: '15px'}}>{getPayableAmount(quantity)}</Typography><EthereumIcon/>
+      </Stack>
     </Stack>
   )
 }
@@ -204,31 +210,64 @@ function MintingInProgress() {
 }
 
 interface MintSuccessProps {
-  txHash: string;
-  txHashUrl: string;
+  tokenUris: string[]
 }
 
-function MintSuccess({txHash, txHashUrl}: MintSuccessProps) {
+function MintSuccess({tokenUris}: MintSuccessProps) {
   return (<Stack direction="column" spacing="4" className="large">
-    <Typography variant="h1">Transaction Confirmed</Typography>
-    <Typography variant="h5">
-      Follow progress here: <Link target="_blank" rel="noopener" href={txHashUrl}>{txHash}</Link>
-    </Typography>
+    <Typography variant="h1">Kongratyewlashuns!</Typography>
+    <Stack direction="row" className="nft-container">
+      {tokenUris.map((uri, index) => <TokenDisplay key={`token-display-${index}`} uri={uri}/>)}
+    </Stack>
   </Stack>);
 }
 
 interface MintingContainerProps {
   mintStatus: MintStatus;
   mint: (quantity: number) => void;
+  getPayableAmount: (quantity: number) => number;
 }
 
-function MintingContainer({mintStatus, mint}: MintingContainerProps) {
+function MintingContainer({mintStatus, mint, getPayableAmount}: MintingContainerProps) {
   return (<Box>
-    {mintStatus.type === 'not-minting' && <MintPanel mint={mint}/>}
+    {mintStatus.type === 'not-minting' && <MintPanel mint={mint} getPayableAmount={getPayableAmount}/>}
     {mintStatus.type === 'pending' && <MintingInProgress/>}
-    {mintStatus.type === 'success' && <MintSuccess txHash={mintStatus.txHash} txHashUrl={mintStatus.txHashUrl}/>}
+    {mintStatus.type === 'success' && <MintSuccess tokenUris={mintStatus.tokenUris}/>}
     {mintStatus.type === 'fail' && <Typography sx={{color: 'red'}}>{mintStatus.error}</Typography>}
   </Box>);
 }
+
+interface Token {
+  image: string;
+  name: string;
+  description: string;
+  attributes: TokenAttribute[];
+}
+
+interface TokenAttribute {
+  trait_type: string,
+  value: string;
+}
+
+interface TokenDisplayProps {
+  uri: string;
+}
+
+function TokenDisplay({ uri }: TokenDisplayProps) {
+  const { isLoading, data } = useFetch<Token>(uri);
+
+  return (
+    <Box className="nft">
+      {data && <Box className="nft-image" sx={{backgroundImage: `url(${data.image})`}}></Box>}
+      {isLoading && <Box className="nft-image" sx={{display: 'flex', flexDirection: 'column', justifyContent: 'center'}}>
+        <CircularProgress color="inherit" size={64}/>
+        </Box>}
+      <Box className="nft-id">
+        {data && <Typography variant="h4">{data.name}</Typography>}
+        {isLoading && <Typography variant="h4">Loading...</Typography>}
+      </Box>
+    </Box>
+  );
+};
 
 export default App;

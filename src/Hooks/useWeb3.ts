@@ -15,7 +15,7 @@ const contract = new web3.eth.Contract(contractABI, contractAddress);
 export type MintStatus =
 { type: 'not-minting' } |
 { type: 'pending', quantity: number } |
-{ type: 'success', txHash: string, txHashUrl: string } |
+{ type: 'success', tokenUris: string[] } |
 { type: 'fail', error: any };
 
 export function useWeb3() {
@@ -106,6 +106,11 @@ export function useWeb3() {
     return price;
   };
 
+  const getBaseTokenURI = async () => {
+    const uri = await contract.methods.baseTokenURI().call();
+    return uri;
+  }
+
   const getPayableAmount = (quantity: number) => {
     let price = 0;
     const newTotal = totalSupply + quantity;
@@ -139,30 +144,30 @@ export function useWeb3() {
       };
     }
 
-    //set up transaction parameters
-    const transactionParameters = {
-      to: contractAddress, // Required except during contract publications.
-      from: address, // must match user's active address.
-      value: getPayableAmount(quantity),
-      data: contract.methods
-        .mint(quantity)
-        .encodeABI(),
-    };
-
-    //sign the transaction
     try {
         setMintStatus({type: 'pending', quantity});
-    
-        const txHash = await window.ethereum.request({
-            method: "eth_sendTransaction",
-            params: [transactionParameters],
+        
+        const result = await contract.methods.mint(quantity).send({
+          from: address,
+          value: getPayableAmount(quantity)
         });
 
-        // test:
-        // await delay(3);
-        // const txHash = "0x235413e4d783e5a1575d5505391cec3f3f1e67ab5d961f1dcff8ce719f60bb91";
-        
-        setMintStatus({type: 'success', txHash: truncateEthAddress(txHash), txHashUrl: `https://goerli.etherscan.io/tx/${txHash}`});
+        console.log(result);
+
+        if (result.status) {
+
+          const baseURI = await getBaseTokenURI();
+          const tokenIds: string[] = result.events.Transfer
+            .filter((e: any) => e.event === 'Transfer')
+            .map((e: any) => e.returnValues["tokenId"] as string);
+          
+          const tokenUris = tokenIds.map(id => `${baseURI}${id}`);
+          
+          setMintStatus({type: 'success', tokenUris});
+        }
+        else {
+          setMintStatus({type: 'fail', error: 'dev'});
+        }
     }
     catch (error: any) {
         setMintStatus({type: 'fail', error});
@@ -179,6 +184,7 @@ export function useWeb3() {
     displayAddress,
     hasMetamask: !!window.ethereum,
     mint,
-    mintStatus
+    mintStatus,
+    getPayableAmount
   };
 }
