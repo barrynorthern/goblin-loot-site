@@ -170,7 +170,7 @@ export function useWeb3() {
         }
     }
     catch (error: any) {
-        setMintStatus({type: 'fail', "There was a problem"});
+        setMintStatus({type: 'fail', error: "There was a problem"});
     }
   };
 
