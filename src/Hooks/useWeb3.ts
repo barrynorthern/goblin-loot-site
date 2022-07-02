@@ -16,7 +16,7 @@ export type MintStatus =
 { type: 'not-minting' } |
 { type: 'pending', quantity: number } |
 { type: 'success', tokenUris: string[] } |
-{ type: 'fail', error: any };
+{ type: 'fail', error: string };
 
 export function useWeb3() {
   // user information
@@ -170,7 +170,7 @@ export function useWeb3() {
         }
     }
     catch (error: any) {
-        setMintStatus({type: 'fail', error});
+        setMintStatus({type: 'fail', "There was a problem"});
     }
   };
 
