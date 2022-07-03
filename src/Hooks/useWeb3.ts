@@ -104,10 +104,10 @@ export function useWeb3() {
     return 0.025; /*ether*/
   };
 
-  const getBaseTokenURI = async () => {
-    const uri = await contract.methods.baseTokenURI().call();
-    return uri;
-  }
+  // const getBaseTokenURI = async () => {
+  //   const uri = await contract.methods.baseTokenURI().call();
+  //   return uri;
+  // }
 
   const getPayableAmount = (quantity: number) => {
     let price = 0;
