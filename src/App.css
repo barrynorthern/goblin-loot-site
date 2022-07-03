@@ -155,7 +155,33 @@
   font-weight: bold;
 }
 
+.links {
+  display: flex;
+  direction: row;
+  justify-content: space-between;
+  margin: 10px auto 0 auto;
+  align-items: center;
+  width: 50%;
+}
+
+.twitter {
+  font-size: 24px
+}
+
+.etherscan {
+  height: 24px;
+}
+
+.opensea {
+  height: 24px;
+}
+
 @media (max-width: 599px) {
+
+  .links {
+    width: 100%;
+    padding: 0 15px;
+  }
   .App-header .MuiTypography-root {
     font-size: 32px;
   }

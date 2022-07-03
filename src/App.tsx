@@ -1,5 +1,7 @@
 import { useState } from "react";
 import logo from "./collection.svg";
+import etherscan from "./etherscan.svg";
+import opensea from "./opensea.svg";
 import metamaskLogo from "./metamask.svg";
 import lineImage from "./line.png";
 import { Box, Typography, Button, Stack, Link, Slider } from "@mui/material";
@@ -7,7 +9,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import "./App.css";
 import { useWeb3, MintStatus } from "./Hooks/useWeb3";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEthereum } from "@fortawesome/free-brands-svg-icons";
+import { faEthereum, faTwitter } from "@fortawesome/free-brands-svg-icons";
 import useFetch from "react-fetch-hook";
 
 const DEFAULT_QUANTITY = 5;
@@ -48,6 +50,7 @@ function App() {
 }
 
 const EthereumIcon = () => <FontAwesomeIcon icon={faEthereum} />;
+const TwitterIcon = () => <FontAwesomeIcon icon={faTwitter} />;
 
 interface AppHeaderProps {
   totalSupply: number;
@@ -67,7 +70,7 @@ function AppHeader({
   hasMetamask
 }
 : AppHeaderProps) {
-  return (
+  return (<Box>
   <Stack direction="row" justifyContent="space-between" className="App-header">
     <Stack direction="row" justifyContent="flex-start" spacing={1}>
       <Typography>
@@ -102,7 +105,18 @@ function AppHeader({
       <></>
     )}
   </Stack>
-  );
+  <Stack className="links" direction="row">
+    <Link sx={{marginLeft: '15px'}} className="twitter" target="_blank" rel="noopener" href={`https://twitter.com/goblin_loot_wtf`}>
+      <TwitterIcon/>
+      </Link>
+    <Link sx={{marginLeft: '15px'}} target="_blank" rel="noopener" href={`https://etherscan.io/address/0x57eb04dd716bfcc5682256556f6800985953444f#code`}>
+      <img className="etherscan" src={etherscan} alt="etherscan"></img>
+      </Link>
+    <Link sx={{marginLeft: '15px'}} target="_blank" rel="noopener" href={`https://opensea.io/collection/goblin-loot-wtf`}>
+      <img className="opensea" src={opensea} alt="opensea"></img>
+    </Link>
+  </Stack>
+  </Box>);
 }
 
 function AppBodyBranding() {
@@ -209,16 +223,16 @@ function MintingInProgress() {
   </Box>);
 }
 
-interface MintSuccessProps {
-  tokenUris: string[]
-}
+//interface MintSuccessProps {
+  //tokenUris: string[]
+//}
 
-function MintSuccess({tokenUris}: MintSuccessProps) {
+function MintSuccess() {
   return (<Stack direction="column" spacing="4" className="large">
     <Typography variant="h1">Kongratyewlashuns!</Typography>
-    <Stack direction="row" className="nft-container">
+    {/* <Stack direction="row" className="nft-container">
       {tokenUris.map((uri, index) => <TokenDisplay key={`token-display-${index}`} uri={uri}/>)}
-    </Stack>
+    </Stack> */}
   </Stack>);
 }
 
@@ -232,8 +246,8 @@ function MintingContainer({mintStatus, mint, getPayableAmount}: MintingContainer
   return (<Box>
     {mintStatus.type === 'not-minting' && <MintPanel mint={mint} getPayableAmount={getPayableAmount}/>}
     {mintStatus.type === 'pending' && <MintingInProgress/>}
-    {mintStatus.type === 'success' && <MintSuccess tokenUris={mintStatus.tokenUris}/>}
-    {mintStatus.type === 'fail' && <Typography sx={{color: 'red'}}>{mintStatus.error}</Typography>}
+    {mintStatus.type === 'success' && <MintSuccess/>}
+    {/* {mintStatus.type === 'fail' && <Typography sx={{color: 'red'}}>{mintStatus.error}</Typography>} */}
   </Box>);
 }
 

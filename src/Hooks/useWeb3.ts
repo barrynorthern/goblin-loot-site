@@ -15,7 +15,7 @@ const contract = new web3.eth.Contract(contractABI, contractAddress);
 export type MintStatus =
 { type: 'not-minting' } |
 { type: 'pending', quantity: number } |
-{ type: 'success', tokenUris: string[] } |
+{ type: 'success'/*, tokenUris: string[]*/ } |
 { type: 'fail', error: string };
 
 export function useWeb3() {
@@ -152,20 +152,21 @@ export function useWeb3() {
 
         if (result.status) {
 
-          const baseURI = await getBaseTokenURI();
-          const tokenIds: string[] = result.events.Transfer
-            .filter((e: any) => e.event === 'Transfer')
-            .map((e: any) => e.returnValues["tokenId"] as string);
+          // const baseURI = await getBaseTokenURI();
+          // const tokenIds: string[] = result.events.Transfer
+          //   .filter((e: any) => e.event === 'Transfer')
+          //   .map((e: any) => e.returnValues["tokenId"] as string);
           
-          const tokenUris = tokenIds.map(id => `${baseURI}${id}`);
+          // const tokenUris = tokenIds.map(id => `${baseURI}${id}`);
           
-          setMintStatus({type: 'success', tokenUris});
+          setMintStatus({type: 'success'});
         }
         else {
           setMintStatus({type: 'fail', error: 'dev'});
         }
     }
     catch (error: any) {
+        console.error(error);
         setMintStatus({type: 'fail', error: "There was a problem"});
     }
   };
