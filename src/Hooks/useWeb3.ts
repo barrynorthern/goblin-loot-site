@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { createAlchemyWeb3 } from "@alch/alchemy-web3";
 import truncateEthAddress from "truncate-eth-address";
 
@@ -24,7 +24,6 @@ export function useWeb3() {
   const [address, setAddress] = useState("");
   const [displayAddress, setDisplayAddress] = useState("");
   // contract information
-  const [tokenMetadata, setTokenMetadata] = useState({});
   const [totalSupply, setTotalSupply] = useState(0);
   const [freeMintAmount, setFreeMintAmount] = useState(0);
   const [mintPrice, setMintPrice] = useState(0);
@@ -41,18 +40,23 @@ export function useWeb3() {
     }
   };
 
-  async function initialise() {
-    const _tokenMetadata = await getTokenMetadata();
-    const _totalSupply = await getTotalSupply();
-    const _maxSupply = await getMaxSupply();
-    const _freeMintAMount = await getFreeMintAmount();
-    const _mintPrice = await getMintPrice();
-    setTokenMetadata(_tokenMetadata);
-    setTotalSupply(_totalSupply);
-    setMaxSupply(_maxSupply);
-    setFreeMintAmount(_freeMintAMount);
-    setMintPrice(_mintPrice);
-  }
+  const initialise = useCallback(async () => {
+    console.log("initialising...");
+    try {
+      const _totalSupply = await getTotalSupply();
+      const _maxSupply = await getMaxSupply();
+      const _freeMintAMount = await getFreeMintAmount();
+      const _mintPrice = getMintPrice();
+      setTotalSupply(_totalSupply);
+      setMaxSupply(_maxSupply);
+      setFreeMintAmount(_freeMintAMount);
+      setMintPrice(_mintPrice);
+      console.log("initialised");
+    }
+    catch(error) {
+      console.error(error);
+    }
+  }, []);
 
   useEffect(() => {
     try {
@@ -61,7 +65,7 @@ export function useWeb3() {
       console.warn(e);
     }
     initialise();
-  }, []);
+  }, [initialise]);
 
   const connect = () => {
     setConnected(false);
@@ -79,31 +83,25 @@ export function useWeb3() {
     }
   };
 
-  const getTokenMetadata = async () => {
-    const result = await web3.alchemy.getTokenMetadata(
-      process.env["REACT_APP_CONTRACT_ADDRESS"] || ""
-    );
-    return result;
-  };
-
   const getTotalSupply = async () => {
     const total = await contract.methods.totalSupply().call();
-    return total;
+    return parseInt(total, 10);
   };
 
   const getMaxSupply = async () => {
     const total = await contract.methods.MAX_SUPPLY().call();
-    return total;
+    return parseInt(total, 10);
   };
 
   const getFreeMintAmount = async () => {
-    const amount = await contract.methods.freeMintAmount().call();
-    return amount;
+    const amount = await contract.methods.FREE_MINT_AMOUNT().call();
+    return parseInt(amount, 10);
   };
 
-  const getMintPrice = async () => {
-    const price = await contract.methods.mintPrice().call();
-    return price;
+  const getMintPrice = () => {
+    // const price = await contract.methods.mintPrice().call();
+    // return price;
+    return 0.025; /*ether*/
   };
 
   const getBaseTokenURI = async () => {
@@ -126,8 +124,6 @@ export function useWeb3() {
 
     return price;
   };
-
-  const delay = (seconds: number) => new Promise(resolve => setTimeout(resolve, seconds * 1000));
 
   const mint = async (quantity: number) => {
     
@@ -176,7 +172,6 @@ export function useWeb3() {
 
   return {
     connect,
-    tokenMetadata,
     totalSupply,
     maxSupply,
     connected,
