@@ -10,7 +10,7 @@ import "./App.css";
 import { useWeb3, MintStatus } from "./Hooks/useWeb3";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEthereum, faTwitter } from "@fortawesome/free-brands-svg-icons";
-import useFetch from "react-fetch-hook";
+//import useFetch from "react-fetch-hook";
 
 const DEFAULT_QUANTITY = 5;
 
@@ -251,37 +251,37 @@ function MintingContainer({mintStatus, mint, getPayableAmount}: MintingContainer
   </Box>);
 }
 
-interface Token {
-  image: string;
-  name: string;
-  description: string;
-  attributes: TokenAttribute[];
-}
+// interface Token {
+//   image: string;
+//   name: string;
+//   description: string;
+//   attributes: TokenAttribute[];
+// }
 
-interface TokenAttribute {
-  trait_type: string,
-  value: string;
-}
+// interface TokenAttribute {
+//   trait_type: string,
+//   value: string;
+// }
 
-interface TokenDisplayProps {
-  uri: string;
-}
+// interface TokenDisplayProps {
+//   uri: string;
+// }
 
-function TokenDisplay({ uri }: TokenDisplayProps) {
-  const { isLoading, data } = useFetch<Token>(uri);
+// function TokenDisplay({ uri }: TokenDisplayProps) {
+//   const { isLoading, data } = useFetch<Token>(uri);
 
-  return (
-    <Box className="nft">
-      {data && <Box className="nft-image" sx={{backgroundImage: `url(${data.image})`}}></Box>}
-      {isLoading && <Box className="nft-image" sx={{display: 'flex', flexDirection: 'column', justifyContent: 'center'}}>
-        <CircularProgress color="inherit" size={64}/>
-        </Box>}
-      <Box className="nft-id">
-        {data && <Typography variant="h4">{data.name}</Typography>}
-        {isLoading && <Typography variant="h4">Loading...</Typography>}
-      </Box>
-    </Box>
-  );
-};
+//   return (
+//     <Box className="nft">
+//       {data && <Box className="nft-image" sx={{backgroundImage: `url(${data.image})`}}></Box>}
+//       {isLoading && <Box className="nft-image" sx={{display: 'flex', flexDirection: 'column', justifyContent: 'center'}}>
+//         <CircularProgress color="inherit" size={64}/>
+//         </Box>}
+//       <Box className="nft-id">
+//         {data && <Typography variant="h4">{data.name}</Typography>}
+//         {isLoading && <Typography variant="h4">Loading...</Typography>}
+//       </Box>
+//     </Box>
+//   );
+// };
 
 export default App;
